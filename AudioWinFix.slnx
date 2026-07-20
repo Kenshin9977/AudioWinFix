@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AudioWinFix.App/AudioWinFix.App.csproj" />
+    <Project Path="src/AudioWinFix.Core/AudioWinFix.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/AudioWinFix.Core.Tests/AudioWinFix.Core.Tests.csproj" />
+  </Folder>
+</Solution>
