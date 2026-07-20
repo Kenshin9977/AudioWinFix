@@ -1,0 +1,12 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Speaker: pin your default output. Blue reads on light and dark taskbars. -->
+  <g fill="#3B82F6">
+    <rect x="30" y="98" width="50" height="60" rx="9"/>
+    <path d="M74 96 L128 50 V206 L74 160 Z"/>
+  </g>
+  <!-- Padlock badge: "default locked". Amber pops on both backgrounds. -->
+  <path d="M164 150 v-14 a25 25 0 0 1 50 0 v14" fill="none" stroke="#FBBF24" stroke-width="15" stroke-linecap="round"/>
+  <rect x="150" y="150" width="78" height="66" rx="14" fill="#F59E0B"/>
+  <circle cx="189" cy="178" r="7.5" fill="#7C2D12"/>
+  <rect x="185.5" y="181" width="7" height="15" rx="3.5" fill="#7C2D12"/>
+</svg>
