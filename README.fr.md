@@ -48,14 +48,28 @@ Les binaires sont signés Authenticode ; voir [docs/SIGNING.md](docs/SIGNING.md)
 AudioWinFix n'a pas de fenêtre — il vit dans la barre d'état. Clic droit sur
 l'icône :
 
-- **Pause / Reprendre** — arrêter d'annuler temporairement (les switches sont
+- **Pause / Reprendre** — arrêter d'annuler temporairement (switches et volumes
   libres en pause ; l'épinglage suit ce sur quoi vous restez).
-- **Paramètres…** — la **fenêtre de grâce** (ms) et la **langue** (Auto /
-  English / Français).
+- **Appareils par défaut** — définir l'appareil par défaut / de communication par
+  défaut pour la sortie et le micro directement depuis le tray, sans fouiller les
+  menus Windows. Votre choix devient le nouvel épinglage.
+- **Paramètres…** — la **fenêtre de grâce** (ms), la **langue** (Auto / English /
+  Français) et les **verrous de volume** (voir ci-dessous).
 - **Démarrer avec Windows** — démarrage automatique par utilisateur (sans admin).
 - **Rechercher des mises à jour**, **Ouvrir le dossier des journaux**, **Quitter**.
 
 L'info-bulle liste les appareils actuellement épinglés.
+
+### Verrous de volume
+
+Windows (et certains jeux — Black Ops 3 est connu pour remettre le niveau du
+micro) adorent changer le volume tout seuls. Dans **Paramètres → Volumes
+verrouillés**, coche un appareil pour figer son volume et son état muet actuels ;
+tout ce qui les modifie est annulé. Contrairement au changement d'appareil, le
+volume **ne peut pas** être auto-classé volontaire vs involontaire — aucun signal
+ne permet de distinguer un jeu de toi — donc le verrou est explicite : pour
+changer un niveau verrouillé, décoche, ajuste dans Windows, recoche, enregistre.
+La pause (tray) relâche tous les verrous temporairement.
 
 ### La fenêtre de grâce
 

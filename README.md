@@ -44,14 +44,28 @@ Binaries are Authenticode-signed; see [docs/SIGNING.md](docs/SIGNING.md).
 
 AudioWinFix has no window — it lives in the tray. Right-click the tray icon:
 
-- **Pause / Resume** — stop reverting temporarily (switches float freely while
-  paused; pins still track whatever you land on).
-- **Settings…** — the **grace window** (ms) and the **language** (Auto / English
-  / Français).
+- **Pause / Resume** — stop reverting temporarily (switches and volumes float
+  freely while paused; pins still track whatever you land on).
+- **Default devices** — set the default / default-communication device for
+  output and microphone straight from the tray, without digging through the
+  Windows menus. Your choice is adopted as the new pin.
+- **Settings…** — the **grace window** (ms), the **language** (Auto / English /
+  Français), and **volume locks** (see below).
 - **Start with Windows** — per-user auto-start (no admin).
 - **Check for updates**, **Open log folder**, **Quit**.
 
 The tooltip lists the currently pinned devices.
+
+### Volume locks
+
+Windows (and some games — Black Ops 3 is notorious for resetting the mic level)
+love to change device volume on their own. In **Settings → Volume locks**, tick
+a device to freeze its current volume and mute; anything that changes it is
+reverted. Unlike device switching, volume **can't** be auto-classified as
+deliberate vs involuntary — there's no signal to tell a game's change from
+yours — so the lock is explicit: to change a locked level, untick it, adjust in
+Windows, tick it again, and save. Pausing (tray) releases all locks
+temporarily.
 
 ### The grace window
 
