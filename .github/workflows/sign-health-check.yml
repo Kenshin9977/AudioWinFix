@@ -1,0 +1,47 @@
+name: sign-windows health check
+
+# Run this by hand to answer "is the signing host actually working?" without
+# cutting a release. Not having it is why a broken signer was only discovered
+# by publishing a broken installer.
+#
+# The probe is deliberately a PE whose length is NOT a multiple of 8. That is the
+# case that silently produced HashMismatch signatures; an 8-aligned test file
+# passes even when the signer is broken.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  selftest:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch a test PE and make it 8-misaligned
+        shell: bash
+        run: |
+          curl -fsSL -o probe.exe \
+            https://raw.githubusercontent.com/Le-Syl21/ssign/f4fc7d7aca180982a11d9be4ee5aebd394ad5545/ssign-core/tests/fixtures/hello.exe
+          printf 'ABCDE' >> probe.exe
+          size=$(stat -c%s probe.exe)
+          echo "probe.exe: $size bytes (mod 8 = $((size % 8)))"
+          if [ $((size % 8)) -eq 0 ]; then
+            echo "test is worthless if the file is 8-aligned" >&2
+            exit 1
+          fi
+
+      - name: Sign it through the action
+        uses: ./.github/actions/sign-windows
+        with:
+          files: probe.exe
+          ssh-host: ${{ secrets.SIGN_SSH_HOST }}
+          ssh-key: ${{ secrets.SIGN_SSH_KEY }}
+          known-hosts: ${{ secrets.SIGN_SSH_KNOWN_HOSTS }}
+
+      - name: Show what Windows sees
+        shell: pwsh
+        run: |
+          $s = Get-AuthenticodeSignature .\probe.exe
+          "Status      : $($s.Status)"
+          "Signer      : $($s.SignerCertificate.Subject)"
+          "Timestamped : $(if ($s.TimeStamperCertificate) { $s.TimeStamperCertificate.Subject } else { 'NONE' })"

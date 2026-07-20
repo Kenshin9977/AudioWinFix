@@ -1,0 +1,150 @@
+<#
+.SYNOPSIS
+Publishes AudioWinFix as a self-contained single-file Windows
+executable and (optionally) packs it with Velopack into a Setup.exe
+plus delta updates under Releases/.
+
+.DESCRIPTION
+Two stages:
+  1. dotnet publish: produces publish/<RID>/AudioWinFix.exe with the
+     .NET 10 runtime bundled, so end users do not need to install
+     .NET. Compressed single-file with embedded PDBs.
+  2. vpk pack: bundles step 1 into Releases/ as a Velopack-installable
+     package (Setup.exe + main full release nupkg + delta).
+
+Requires:
+  - .NET 10 SDK (user-scoped at %LocalAppData%\Microsoft\dotnet, or
+    on PATH).
+  - For -Pack: .NET 9 runtime (vpk's TFM) and the local dotnet tool
+    `vpk` (declared in dotnet-tools.json — restored automatically).
+#>
+[CmdletBinding()]
+param(
+    [string] $Configuration = 'Release',
+    [string] $RuntimeIdentifier = 'win-x64',
+    [string] $PackVersion = '0.1.0',
+    [string] $PackId = 'AudioWinFix',
+    [string] $Channel = 'win',
+    [switch] $NoCompress,
+    [switch] $Pack,
+    # signtool.exe parameters used by vpk to sign the app exe, Update.exe
+    # and Setup.exe. Empty = produce unsigned binaries (CI stays green
+    # before code-signing secrets are configured).
+    [string] $SignParams = '',
+    # Custom per-file signing command for vpk ({{file}} is substituted).
+    # Used to delegate signing to the SimplySign host over SSH. Takes
+    # precedence over -SignParams. Empty = unsigned.
+    [string] $SignTemplate = ''
+)
+
+$ErrorActionPreference = 'Stop'
+
+$repoRoot = Split-Path -Parent $PSScriptRoot
+$proj = Join-Path $repoRoot 'src/AudioWinFix.App/AudioWinFix.App.csproj'
+$publishDir = Join-Path $repoRoot "publish/$RuntimeIdentifier"
+$releasesDir = Join-Path $repoRoot 'Releases'
+$icon = Join-Path $repoRoot 'AudioWinFix.ico'
+
+if (Test-Path $publishDir) {
+    Remove-Item $publishDir -Recurse -Force
+}
+
+# Prefer the user-scoped .NET 10 SDK if installed there, fall back to PATH.
+$dotnet = Join-Path $env:LOCALAPPDATA 'Microsoft\dotnet\dotnet.exe'
+if (-not (Test-Path $dotnet)) {
+    $dotnet = 'dotnet'
+}
+
+# Make the user-scoped install discoverable for sub-commands (vpk, etc.)
+# without modifying the user's persistent PATH.
+$env:DOTNET_ROOT = Split-Path -Parent $dotnet
+
+# ---------- Stage 1: publish ----------
+# Stamp the binary with the version being released, so the exe's file properties
+# agree with the package. Without this they sit at whatever Directory.Build.props
+# happens to say and silently drift behind every tag.
+# AssemblyVersion/FileVersion must be plain numeric, so drop any -prerelease part.
+$numericVersion = ($PackVersion -split '[-+]')[0]
+while (($numericVersion -split '\.').Count -lt 4) { $numericVersion += '.0' }
+
+$publishArgs = @(
+    'publish', $proj,
+    '-c', $Configuration,
+    '-r', $RuntimeIdentifier,
+    '--self-contained',
+    '-p:PublishSingleFile=true',
+    '-p:IncludeNativeLibrariesForSelfExtract=true',
+    '-p:PublishReadyToRun=true',
+    '-p:DebugType=embedded',
+    "-p:Version=$PackVersion",
+    "-p:AssemblyVersion=$numericVersion",
+    "-p:FileVersion=$numericVersion",
+    '-o', $publishDir
+)
+if (-not $NoCompress) {
+    $publishArgs += '-p:EnableCompressionInSingleFile=true'
+}
+
+Write-Host "Publishing $proj -> $publishDir ($RuntimeIdentifier, $Configuration)" -ForegroundColor Cyan
+& $dotnet @publishArgs
+if ($LASTEXITCODE -ne 0) {
+    throw "dotnet publish failed with exit code $LASTEXITCODE"
+}
+
+$exe = Join-Path $publishDir 'AudioWinFix.exe'
+if (-not (Test-Path $exe)) {
+    throw "Expected publish output not found: $exe"
+}
+
+$size = (Get-Item $exe).Length
+Write-Host ("Published: {0} ({1:N1} MB)" -f $exe, ($size / 1MB)) -ForegroundColor Green
+
+# ---------- Stage 2: vpk pack ----------
+if ($Pack) {
+    Write-Host "Restoring local dotnet tools…" -ForegroundColor Cyan
+    Push-Location $repoRoot
+    try {
+        & $dotnet tool restore
+        if ($LASTEXITCODE -ne 0) { throw "dotnet tool restore failed" }
+    }
+    finally {
+        Pop-Location
+    }
+
+    $vpkArgs = @(
+        'vpk', 'pack',
+        '--packId', $PackId,
+        '--packVersion', $PackVersion,
+        '--packDir', $publishDir,
+        '--mainExe', 'AudioWinFix.exe',
+        '--outputDir', $releasesDir,
+        '--channel', $Channel,
+        '-r', $RuntimeIdentifier
+    )
+    if (Test-Path $icon) {
+        $vpkArgs += @('--icon', $icon)
+    }
+    if (-not [string]::IsNullOrWhiteSpace($SignTemplate)) {
+        Write-Host "Code signing enabled (vpk --signTemplate, delegated)" -ForegroundColor Cyan
+        $vpkArgs += @('--signTemplate', $SignTemplate)
+    }
+    elseif (-not [string]::IsNullOrWhiteSpace($SignParams)) {
+        Write-Host "Code signing enabled (vpk --signParams)" -ForegroundColor Cyan
+        $vpkArgs += @('--signParams', $SignParams)
+    }
+    else {
+        Write-Host "Code signing disabled — binaries will be unsigned" -ForegroundColor Yellow
+    }
+
+    Write-Host "Packing with vpk -> $releasesDir" -ForegroundColor Cyan
+    & $dotnet @vpkArgs
+    if ($LASTEXITCODE -ne 0) {
+        throw "vpk pack failed with exit code $LASTEXITCODE"
+    }
+
+    $setup = Join-Path $releasesDir 'AudioWinFix-win-Setup.exe'
+    if (Test-Path $setup) {
+        $setupSize = (Get-Item $setup).Length
+        Write-Host ("Setup ready: {0} ({1:N1} MB)" -f $setup, ($setupSize / 1MB)) -ForegroundColor Green
+    }
+}
