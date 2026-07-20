@@ -20,8 +20,11 @@ public static class PolicyConfig
         finally { Marshal.ReleaseComObject(client); }
     }
 
+    // Not sealed: the (IPolicyConfig) cast below is a runtime COM QueryInterface,
+    // which the compiler only permits when the coclass could implement the
+    // interface — a sealed class provably can't, giving CS0030.
     [ComImport, Guid("870af99c-171d-4f9e-af0d-e63df40c2bc9")]
-    private sealed class CPolicyConfigClient { }
+    private class CPolicyConfigClient { }
 
     [ComImport, Guid("f8679f50-850a-41cf-9c72-430f290290c8"),
      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
