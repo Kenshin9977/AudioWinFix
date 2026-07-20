@@ -27,10 +27,8 @@ jobs:
         with:
           global-json-file: global.json
 
-      - name: Setup .NET 9 SDK (vpk targets net9.0)
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: '9.0.x'
+      # vpk ships as a net9.0 tool but rolls forward onto the .NET 10 runtime
+      # (dotnet-tools.json: rollForward=true), so no separate .NET 9 install.
 
       - name: Resolve version
         id: version
