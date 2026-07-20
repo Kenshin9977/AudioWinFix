@@ -24,7 +24,7 @@ public sealed class VolumeGuard(IOptionsMonitor<VolumeOptions> options, ILogger<
     private sealed class Watched
     {
         public required MMDevice Device { get; init; }
-        public required Action<AudioVolumeNotificationData> Handler { get; init; }
+        public required AudioEndpointVolumeNotificationDelegate Handler { get; init; }
     }
 
     /// <summary>When true, observe but do not restore (shares the tray Pause).</summary>
@@ -55,9 +55,10 @@ public sealed class VolumeGuard(IOptionsMonitor<VolumeOptions> options, ILogger<
                 try
                 {
                     var dev = enumerator.GetDevice(id);
-                    void Handler(AudioVolumeNotificationData data) => Enforce(id, data.MasterVolume, data.Muted);
-                    dev.AudioEndpointVolume.OnVolumeNotification += Handler;
-                    watched[id] = new Watched { Device = dev, Handler = Handler };
+                    AudioEndpointVolumeNotificationDelegate handler =
+                        data => Enforce(id, data.MasterVolume, data.Muted);
+                    dev.AudioEndpointVolume.OnVolumeNotification += handler;
+                    watched[id] = new Watched { Device = dev, Handler = handler };
                     var vol = dev.AudioEndpointVolume;
                     Enforce(id, vol.MasterVolumeLevelScalar, vol.Mute); // enforce immediately on lock
                 }
