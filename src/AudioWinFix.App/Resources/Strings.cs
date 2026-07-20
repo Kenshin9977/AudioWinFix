@@ -20,6 +20,13 @@ internal static class Strings
         ["TrayPaused"] = "AudioWinFix — paused",
         ["MenuPause"] = "Pause",
         ["MenuResume"] = "Resume",
+        ["MenuDefaultDevices"] = "Default devices",
+        ["MenuOutputDefault"] = "Output · default",
+        ["MenuOutputComm"] = "Output · communication",
+        ["MenuInputDefault"] = "Microphone · default",
+        ["MenuInputComm"] = "Microphone · communication",
+        ["MenuNoDevices"] = "(no devices)",
+        ["DeviceSwitchFailed"] = "Could not set the default device: {0}",
         ["MenuSettings"] = "Settings…",
         ["MenuStartWithWindows"] = "Start with Windows",
         ["MenuCheckUpdates"] = "Check for updates",
@@ -34,6 +41,12 @@ internal static class Strings
             "automatic and reverted. Manual changes made later are kept.",
         ["SettingsLanguageLabel"] = "Language:",
         ["SettingsLanguageAuto"] = "Auto (system)",
+        ["SettingsVolumesHeader"] = "Volume locks",
+        ["SettingsVolumesHelp"] =
+            "Tick a device to lock its current volume and mute. Anything that changes it " +
+            "(a game, an app) is reverted. To change a locked level, untick it, adjust in " +
+            "Windows, then tick it again and save.",
+        ["SettingsVolumeRow"] = "{0} — {1}%",
         ["SettingsSave"] = "Save",
         ["SettingsCancel"] = "Cancel",
 
@@ -58,6 +71,13 @@ internal static class Strings
         ["TrayPaused"] = "AudioWinFix — en pause",
         ["MenuPause"] = "Pause",
         ["MenuResume"] = "Reprendre",
+        ["MenuDefaultDevices"] = "Appareils par défaut",
+        ["MenuOutputDefault"] = "Sortie · défaut",
+        ["MenuOutputComm"] = "Sortie · communication",
+        ["MenuInputDefault"] = "Micro · défaut",
+        ["MenuInputComm"] = "Micro · communication",
+        ["MenuNoDevices"] = "(aucun appareil)",
+        ["DeviceSwitchFailed"] = "Impossible de définir l'appareil par défaut : {0}",
         ["MenuSettings"] = "Paramètres…",
         ["MenuStartWithWindows"] = "Démarrer avec Windows",
         ["MenuCheckUpdates"] = "Rechercher des mises à jour",
@@ -72,6 +92,12 @@ internal static class Strings
             "est considéré comme automatique et annulé. Les changements manuels ultérieurs sont conservés.",
         ["SettingsLanguageLabel"] = "Langue :",
         ["SettingsLanguageAuto"] = "Auto (système)",
+        ["SettingsVolumesHeader"] = "Volumes verrouillés",
+        ["SettingsVolumesHelp"] =
+            "Coche un appareil pour verrouiller son volume et son état muet actuels. Tout ce " +
+            "qui les modifie (un jeu, une app) est annulé. Pour changer un niveau verrouillé : " +
+            "décoche, ajuste dans Windows, puis recoche et enregistre.",
+        ["SettingsVolumeRow"] = "{0} — {1} %",
         ["SettingsSave"] = "Enregistrer",
         ["SettingsCancel"] = "Annuler",
 
@@ -107,6 +133,13 @@ internal static class Strings
     public static string TrayPaused => Get();
     public static string MenuPause => Get();
     public static string MenuResume => Get();
+    public static string MenuDefaultDevices => Get();
+    public static string MenuOutputDefault => Get();
+    public static string MenuOutputComm => Get();
+    public static string MenuInputDefault => Get();
+    public static string MenuInputComm => Get();
+    public static string MenuNoDevices => Get();
+    public static string DeviceSwitchFailed(string message) => Format(nameof(DeviceSwitchFailed), message);
     public static string MenuSettings => Get();
     public static string MenuStartWithWindows => Get();
     public static string MenuCheckUpdates => Get();
@@ -118,6 +151,9 @@ internal static class Strings
     public static string SettingsThresholdHelp => Get();
     public static string SettingsLanguageLabel => Get();
     public static string SettingsLanguageAuto => Get();
+    public static string SettingsVolumesHeader => Get();
+    public static string SettingsVolumesHelp => Get();
+    public static string SettingsVolumeRow(string name, int percent) => Format(nameof(SettingsVolumeRow), name, percent);
     public static string SettingsSave => Get();
     public static string SettingsCancel => Get();
 

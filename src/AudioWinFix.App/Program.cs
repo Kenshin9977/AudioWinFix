@@ -50,6 +50,7 @@ internal sealed class Program
             reloadOnChange: true);
 
         builder.Services.Configure<AudioMonitorOptions>(builder.Configuration.GetSection("Audio"));
+        builder.Services.Configure<VolumeOptions>(builder.Configuration.GetSection("Volume"));
 
         builder.Services.AddSerilog((services, lc) => lc
             .ReadFrom.Services(services)

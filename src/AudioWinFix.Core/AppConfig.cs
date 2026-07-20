@@ -7,6 +7,8 @@ public sealed class AppConfig
 {
     public AudioMonitorOptions Audio { get; set; } = new();
 
+    public VolumeOptions Volume { get; set; } = new();
+
     /// <summary>"auto" | "en" | "fr".</summary>
     public string Language { get; set; } = "auto";
 }

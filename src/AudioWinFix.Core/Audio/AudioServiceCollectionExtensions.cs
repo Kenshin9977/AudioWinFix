@@ -8,6 +8,8 @@ public static class AudioServiceCollectionExtensions
     {
         services.AddSingleton<PinStore>(_ => new PinStore());
         services.AddSingleton<IAudioMonitor, AudioMonitor>();
+        services.AddSingleton<AudioController>();
+        services.AddSingleton<VolumeGuard>();
         return services;
     }
 }

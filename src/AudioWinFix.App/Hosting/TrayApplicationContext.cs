@@ -5,6 +5,7 @@ using AudioWinFix.Core;
 using AudioWinFix.Core.Audio;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NAudio.CoreAudioApi;
 
 namespace AudioWinFix.App.Hosting;
 
@@ -16,6 +17,8 @@ public sealed class TrayApplicationContext : ApplicationContext
     private readonly ILogger<TrayApplicationContext> logger;
     private readonly IHostApplicationLifetime lifetime;
     private readonly IAudioMonitor monitor;
+    private readonly VolumeGuard volumeGuard;
+    private readonly AudioController controller;
     private readonly AutoStartManager autoStart;
     private readonly AppUpdater updater;
 
@@ -28,12 +31,16 @@ public sealed class TrayApplicationContext : ApplicationContext
         ILogger<TrayApplicationContext> logger,
         IHostApplicationLifetime lifetime,
         IAudioMonitor monitor,
+        VolumeGuard volumeGuard,
+        AudioController controller,
         AutoStartManager autoStart,
         AppUpdater updater)
     {
         this.logger = logger;
         this.lifetime = lifetime;
         this.monitor = monitor;
+        this.volumeGuard = volumeGuard;
+        this.controller = controller;
         this.autoStart = autoStart;
         this.updater = updater;
 
@@ -44,6 +51,7 @@ public sealed class TrayApplicationContext : ApplicationContext
             Checked = autoStart.IsEnabled,
         };
         menu.Items.Add(pauseItem);
+        menu.Items.Add(BuildDevicesMenu());
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(Strings.MenuSettings, null, OnSettingsClicked);
         menu.Items.Add(autoStartItem);
@@ -94,10 +102,78 @@ public sealed class TrayApplicationContext : ApplicationContext
 
     private void OnPauseToggled(object? sender, EventArgs e)
     {
-        monitor.Paused = !monitor.Paused;
-        pauseItem.Text = monitor.Paused ? Strings.MenuResume : Strings.MenuPause;
-        logger.LogInformation("Monitor {State}", monitor.Paused ? "paused" : "resumed");
+        var paused = !monitor.Paused;
+        monitor.Paused = paused;
+        volumeGuard.Paused = paused;
+        pauseItem.Text = paused ? Strings.MenuResume : Strings.MenuPause;
+        logger.LogInformation("Guards {State}", paused ? "paused" : "resumed");
         RefreshTooltip();
+    }
+
+    private ToolStripMenuItem BuildDevicesMenu()
+    {
+        var root = new ToolStripMenuItem(Strings.MenuDefaultDevices);
+        root.DropDownItems.Add(BuildDeviceGroup(Strings.MenuOutputDefault, DataFlow.Render, communications: false));
+        root.DropDownItems.Add(BuildDeviceGroup(Strings.MenuOutputComm, DataFlow.Render, communications: true));
+        root.DropDownItems.Add(BuildDeviceGroup(Strings.MenuInputDefault, DataFlow.Capture, communications: false));
+        root.DropDownItems.Add(BuildDeviceGroup(Strings.MenuInputComm, DataFlow.Capture, communications: true));
+        return root;
+    }
+
+    private ToolStripMenuItem BuildDeviceGroup(string label, DataFlow flow, bool communications)
+    {
+        var group = new ToolStripMenuItem(label);
+        // Placeholder so the submenu arrow shows; repopulated live each time it opens.
+        group.DropDownItems.Add(new ToolStripMenuItem(Strings.MenuNoDevices) { Enabled = false });
+        group.DropDownOpening += (_, _) => PopulateDeviceGroup(group, flow, communications);
+        return group;
+    }
+
+    private void PopulateDeviceGroup(ToolStripMenuItem group, DataFlow flow, bool communications)
+    {
+        group.DropDownItems.Clear();
+        IReadOnlyList<AudioDeviceInfo> devices;
+        try
+        {
+            devices = controller.List(flow);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Listing {Flow} devices failed", flow);
+            devices = [];
+        }
+
+        if (devices.Count == 0)
+        {
+            group.DropDownItems.Add(new ToolStripMenuItem(Strings.MenuNoDevices) { Enabled = false });
+            return;
+        }
+
+        foreach (var d in devices)
+        {
+            var id = d.Id;
+            var item = new ToolStripMenuItem(d.Name)
+            {
+                Checked = communications ? d.IsDefaultComm : d.IsDefault,
+            };
+            item.Click += (_, _) => OnPickDevice(id, flow, communications);
+            group.DropDownItems.Add(item);
+        }
+    }
+
+    private void OnPickDevice(string id, DataFlow flow, bool communications)
+    {
+        try
+        {
+            controller.SetDefault(id, flow, communications);
+            RefreshTooltip();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Setting default device failed");
+            MessageBox.Show(Strings.DeviceSwitchFailed(ex.Message), Strings.AppName,
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
     }
 
     private void OnAutoStartToggled(object? sender, EventArgs e)
@@ -117,7 +193,7 @@ public sealed class TrayApplicationContext : ApplicationContext
     private void OnSettingsClicked(object? sender, EventArgs e)
     {
         var current = AppConfigStore.LoadAsync().GetAwaiter().GetResult();
-        using var form = new SettingsForm(current);
+        using var form = new SettingsForm(current, controller);
         if (form.ShowDialog() != DialogResult.OK) return;
 
         AppConfigStore.SaveAsync(form.Result).GetAwaiter().GetResult();
