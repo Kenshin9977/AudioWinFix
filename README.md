@@ -38,7 +38,18 @@ Communications) for both playback and recording.
 2. Run it. It installs to `%LocalAppData%\AudioWinFix` (no admin needed) and
    starts to the system tray. Updates are delivered automatically (Velopack).
 
-Binaries are Authenticode-signed; see [docs/SIGNING.md](docs/SIGNING.md).
+Binaries are Authenticode-signed (Certum, timestamped).
+
+## Screenshots
+
+Tray menu, and the default-device picker — set your default output / microphone
+(and their communication variants) straight from the tray:
+
+![Tray menu](assets/tray-menu.png) &nbsp; ![Default-device picker](assets/devices-menu.png)
+
+Settings — the auto-switch grace window, the language, and per-device volume locks:
+
+![Settings and volume locks](assets/settings.png)
 
 ## Use
 

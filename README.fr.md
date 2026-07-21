@@ -41,7 +41,20 @@ suivis, pour la lecture comme pour la capture.
 2. Lancez-le. Il s'installe dans `%LocalAppData%\AudioWinFix` (aucun droit admin)
    et démarre dans la barre d'état. Les mises à jour sont automatiques (Velopack).
 
-Les binaires sont signés Authenticode ; voir [docs/SIGNING.md](docs/SIGNING.md).
+Les binaires sont signés Authenticode (Certum, horodatés).
+
+## Captures
+
+Le menu du tray et le sélecteur d'appareil par défaut — définis ta sortie /
+ton micro par défaut (et leurs variantes communication) directement depuis le
+tray :
+
+![Menu du tray](assets/tray-menu.png) &nbsp; ![Sélecteur d'appareil](assets/devices-menu.png)
+
+Paramètres — la fenêtre anti-bascule, la langue, et les verrous de volume par
+appareil :
+
+![Paramètres et verrous de volume](assets/settings.png)
 
 ## Utilisation
 
