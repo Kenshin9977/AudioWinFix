@@ -2,8 +2,8 @@
 
 [Français](README.fr.md)
 
-A tiny Windows tray app that **pins your default audio devices** — playback,
-recording, and communication — so Windows stops hijacking them every time you
+A tiny Windows tray app that **pins your default audio devices** - playback,
+recording, and communication - so Windows stops hijacking them every time you
 plug in a headset, monitor, dock, or USB DAC. You can still switch devices
 manually whenever you want; AudioWinFix only fights the *automatic* switches.
 
@@ -25,7 +25,7 @@ events. When the default changes:
 - **On its own, with no recent plug event** → it's treated as a **manual**
   switch and silently **adopted** as the new pin.
 
-So switching in the normal Windows Sound settings just works — that becomes your
+So switching in the normal Windows Sound settings just works - that becomes your
 new pinned device. Only Windows' unsolicited switches get undone.
 
 It tracks all three of Windows' default roles (Console, Multimedia,
@@ -42,39 +42,39 @@ Binaries are Authenticode-signed (Certum, timestamped).
 
 ## Screenshots
 
-Tray menu, and the default-device picker — set your default output / microphone
+Tray menu, and the default-device picker - set your default output / microphone
 (and their communication variants) straight from the tray:
 
 ![Tray menu](assets/tray-menu.png) &nbsp; ![Default-device picker](assets/devices-menu.png)
 
-Settings — the auto-switch grace window, the language, and per-device volume locks:
+Settings - the auto-switch grace window, the language, and per-device volume locks:
 
 ![Settings and volume locks](assets/settings.png)
 
 ## Use
 
-AudioWinFix has no window — it lives in the tray. Right-click the tray icon:
+AudioWinFix has no window - it lives in the tray. Right-click the tray icon:
 
-- **Pause / Resume** — stop reverting temporarily (switches and volumes float
+- **Pause / Resume** - stop reverting temporarily (switches and volumes float
   freely while paused; pins still track whatever you land on).
-- **Default devices** — set the default / default-communication device for
+- **Default devices** - set the default / default-communication device for
   output and microphone straight from the tray, without digging through the
   Windows menus. Your choice is adopted as the new pin.
-- **Settings…** — the **grace window** (ms), the **language** (Auto / English /
+- **Settings…** - the **grace window** (ms), the **language** (Auto / English /
   Français), and **volume locks** (see below).
-- **Start with Windows** — per-user auto-start (no admin).
+- **Start with Windows** - per-user auto-start (no admin).
 - **Check for updates**, **Open log folder**, **Quit**.
 
 The tooltip lists the currently pinned devices.
 
 ### Volume locks
 
-Windows (and some games — Black Ops 3 is notorious for resetting the mic level)
+Windows (and some games - Black Ops 3 is notorious for resetting the mic level)
 love to change device volume on their own. In **Settings → Volume locks**, tick
 a device to freeze its current volume and mute; anything that changes it is
 reverted. Unlike device switching, volume **can't** be auto-classified as
-deliberate vs involuntary — there's no signal to tell a game's change from
-yours — so the lock is explicit: to change a locked level, untick it, adjust in
+deliberate vs involuntary - there's no signal to tell a game's change from
+yours - so the lock is explicit: to change a locked level, untick it, adjust in
 Windows, tick it again, and save. Pausing (tray) releases all locks
 temporarily.
 
@@ -121,7 +121,7 @@ tests/
 
 ## Tech
 
-- **NAudio** — CoreAudio device enumeration and default-change notifications.
-- **IPolicyConfig** (COM interop) — sets the default endpoint per role, the same
+- **NAudio** - CoreAudio device enumeration and default-change notifications.
+- **IPolicyConfig** (COM interop) - sets the default endpoint per role, the same
   interface the Sound control panel uses.
-- **Velopack** — installer + auto-update. **Serilog** — logging.
+- **Velopack** - installer + auto-update. **Serilog** - logging.

@@ -3,7 +3,7 @@
 [English](README.md)
 
 Une petite app Windows en barre d'état qui **épingle vos appareils audio par
-défaut** — lecture, micro et communication — pour que Windows arrête de les
+défaut** - lecture, micro et communication - pour que Windows arrête de les
 changer dès que vous branchez un casque, un écran, une station d'accueil ou un
 DAC USB. Vous pouvez toujours switcher manuellement quand vous voulez ;
 AudioWinFix ne combat que les changements *automatiques*.
@@ -27,7 +27,7 @@ branchements/débranchements. Quand le défaut change :
 - **Tout seul, sans branchement récent** → c'est considéré comme un changement
   **manuel** et **adopté** silencieusement comme nouvel épinglage.
 
-Donc switcher via les paramètres Son de Windows fonctionne normalement — ça
+Donc switcher via les paramètres Son de Windows fonctionne normalement - ça
 devient votre nouvel appareil épinglé. Seuls les changements non sollicités de
 Windows sont annulés.
 
@@ -45,42 +45,42 @@ Les binaires sont signés Authenticode (Certum, horodatés).
 
 ## Captures
 
-Le menu du tray et le sélecteur d'appareil par défaut — définis ta sortie /
+Le menu du tray et le sélecteur d'appareil par défaut - définis ta sortie /
 ton micro par défaut (et leurs variantes communication) directement depuis le
 tray :
 
 ![Menu du tray](assets/tray-menu.png) &nbsp; ![Sélecteur d'appareil](assets/devices-menu.png)
 
-Paramètres — la fenêtre anti-bascule, la langue, et les verrous de volume par
+Paramètres - la fenêtre anti-bascule, la langue, et les verrous de volume par
 appareil :
 
 ![Paramètres et verrous de volume](assets/settings.png)
 
 ## Utilisation
 
-AudioWinFix n'a pas de fenêtre — il vit dans la barre d'état. Clic droit sur
+AudioWinFix n'a pas de fenêtre - il vit dans la barre d'état. Clic droit sur
 l'icône :
 
-- **Pause / Reprendre** — arrêter d'annuler temporairement (switches et volumes
+- **Pause / Reprendre** - arrêter d'annuler temporairement (switches et volumes
   libres en pause ; l'épinglage suit ce sur quoi vous restez).
-- **Appareils par défaut** — définir l'appareil par défaut / de communication par
+- **Appareils par défaut** - définir l'appareil par défaut / de communication par
   défaut pour la sortie et le micro directement depuis le tray, sans fouiller les
   menus Windows. Votre choix devient le nouvel épinglage.
-- **Paramètres…** — la **fenêtre de grâce** (ms), la **langue** (Auto / English /
+- **Paramètres…** - la **fenêtre de grâce** (ms), la **langue** (Auto / English /
   Français) et les **verrous de volume** (voir ci-dessous).
-- **Démarrer avec Windows** — démarrage automatique par utilisateur (sans admin).
+- **Démarrer avec Windows** - démarrage automatique par utilisateur (sans admin).
 - **Rechercher des mises à jour**, **Ouvrir le dossier des journaux**, **Quitter**.
 
 L'info-bulle liste les appareils actuellement épinglés.
 
 ### Verrous de volume
 
-Windows (et certains jeux — Black Ops 3 est connu pour remettre le niveau du
+Windows (et certains jeux - Black Ops 3 est connu pour remettre le niveau du
 micro) adorent changer le volume tout seuls. Dans **Paramètres → Volumes
 verrouillés**, coche un appareil pour figer son volume et son état muet actuels ;
 tout ce qui les modifie est annulé. Contrairement au changement d'appareil, le
-volume **ne peut pas** être auto-classé volontaire vs involontaire — aucun signal
-ne permet de distinguer un jeu de toi — donc le verrou est explicite : pour
+volume **ne peut pas** être auto-classé volontaire vs involontaire - aucun signal
+ne permet de distinguer un jeu de toi - donc le verrou est explicite : pour
 changer un niveau verrouillé, décoche, ajuste dans Windows, recoche, enregistre.
 La pause (tray) relâche tous les verrous temporairement.
 
@@ -128,7 +128,7 @@ tests/
 
 ## Techno
 
-- **NAudio** — énumération CoreAudio et notifications de changement de défaut.
-- **IPolicyConfig** (interop COM) — définit l'appareil par défaut par rôle, la
+- **NAudio** - énumération CoreAudio et notifications de changement de défaut.
+- **IPolicyConfig** (interop COM) - définit l'appareil par défaut par rôle, la
   même interface que le panneau de configuration Son.
-- **Velopack** — installeur + mise à jour automatique. **Serilog** — journaux.
+- **Velopack** - installeur + mise à jour automatique. **Serilog** - journaux.
