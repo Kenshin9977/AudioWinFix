@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>audiowinfix</id>
+    <version>$version$</version>
+    <packageSourceUrl>https://github.com/Kenshin9977/AudioWinFix/tree/main/packaging/chocolatey</packageSourceUrl>
+    <owners>Kenshin9977</owners>
+
+    <title>AudioWinFix</title>
+    <authors>Kenshin9977</authors>
+    <projectUrl>https://github.com/Kenshin9977/AudioWinFix</projectUrl>
+    <licenseUrl>https://github.com/Kenshin9977/AudioWinFix/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/Kenshin9977/AudioWinFix</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/Kenshin9977/AudioWinFix/issues</bugTrackerUrl>
+    <docsUrl>https://github.com/Kenshin9977/AudioWinFix#readme</docsUrl>
+    <iconUrl>https://raw.githubusercontent.com/Kenshin9977/AudioWinFix/main/AudioWinFix.svg</iconUrl>
+    <tags>audio sound default-device playback recording headset tray windows utility</tags>
+
+    <summary>Stops Windows from switching your audio device every time you plug something in.</summary>
+    <description><![CDATA[
+Windows changes your default playback, recording and communications devices on
+its own, whenever a headset, a monitor or a dock appears or disappears. If you
+have ever finished a call and found your game audio coming out of the monitor
+speakers, that is this.
+
+AudioWinFix pins the devices you chose. Plug and unplug all you like: what you
+picked stays picked. Switching by hand still works and is taken as the new
+intent, so it stays out of the way rather than fighting you.
+
+It sits in the tray, uses no perceptible resources, and needs no configuration
+beyond telling it once what you want.
+
+**About this package**
+
+Installs the portable build, machine-wide, and updates through Chocolatey. The
+installer on the releases page instead installs per user and updates itself; use
+whichever suits how you manage the machine.
+]]></description>
+
+    <releaseNotes>https://github.com/Kenshin9977/AudioWinFix/releases/tag/v$version$</releaseNotes>
+  </metadata>
+
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
