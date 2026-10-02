@@ -42,6 +42,19 @@ internal static class Strings
             "automatic and reverted. Manual changes made later are kept.",
         ["SettingsLanguageLabel"] = "Language:",
         ["SettingsLanguageAuto"] = "Auto (system)",
+        ["SettingsFavoritesHeader"] = "Favorite devices",
+        ["SettingsFavoritesHelp"] =
+            "Automatic switches may only land on these devices. When the pinned device is " +
+            "unplugged, the default goes to the first connected favorite instead of whatever " +
+            "Windows picked. Switches you make yourself are never blocked.",
+        ["SettingsFavoritesOutput"] = "Output",
+        ["SettingsFavoritesInput"] = "Microphone",
+        ["SettingsFavoritesAdd"] = "Add",
+        ["SettingsFavoritesNone"] = "No favorites: Windows' choice is kept when the pinned device is unplugged.",
+        ["SettingsFavoriteOffline"] = "{0} (disconnected)",
+        ["SettingsFavoriteMoveUp"] = "Higher priority",
+        ["SettingsFavoriteMoveDown"] = "Lower priority",
+        ["SettingsFavoriteRemove"] = "Remove",
         ["SettingsVolumesHeader"] = "Volume locks",
         ["SettingsVolumesHelp"] =
             "Tick a device to lock its current volume and mute. Anything that changes it " +
@@ -100,6 +113,19 @@ internal static class Strings
             "est considéré comme automatique et annulé. Les changements manuels ultérieurs sont conservés.",
         ["SettingsLanguageLabel"] = "Langue :",
         ["SettingsLanguageAuto"] = "Auto (système)",
+        ["SettingsFavoritesHeader"] = "Appareils favoris",
+        ["SettingsFavoritesHelp"] =
+            "Les bascules automatiques ne peuvent aller que vers ces appareils. Quand l'appareil " +
+            "épinglé est débranché, le défaut passe au premier favori connecté au lieu du choix " +
+            "de Windows. Tes propres changements ne sont jamais bloqués.",
+        ["SettingsFavoritesOutput"] = "Sortie",
+        ["SettingsFavoritesInput"] = "Micro",
+        ["SettingsFavoritesAdd"] = "Ajouter",
+        ["SettingsFavoritesNone"] = "Aucun favori : le choix de Windows est conservé quand l'appareil épinglé est débranché.",
+        ["SettingsFavoriteOffline"] = "{0} (déconnecté)",
+        ["SettingsFavoriteMoveUp"] = "Priorité plus haute",
+        ["SettingsFavoriteMoveDown"] = "Priorité plus basse",
+        ["SettingsFavoriteRemove"] = "Retirer",
         ["SettingsVolumesHeader"] = "Volumes verrouillés",
         ["SettingsVolumesHelp"] =
             "Coche un appareil pour verrouiller son volume et son état muet actuels. Tout ce " +
@@ -166,6 +192,16 @@ internal static class Strings
     public static string SettingsThresholdHelp => Get();
     public static string SettingsLanguageLabel => Get();
     public static string SettingsLanguageAuto => Get();
+    public static string SettingsFavoritesHeader => Get();
+    public static string SettingsFavoritesHelp => Get();
+    public static string SettingsFavoritesOutput => Get();
+    public static string SettingsFavoritesInput => Get();
+    public static string SettingsFavoritesAdd => Get();
+    public static string SettingsFavoritesNone => Get();
+    public static string SettingsFavoriteOffline(string name) => Format(nameof(SettingsFavoriteOffline), name);
+    public static string SettingsFavoriteMoveUp => Get();
+    public static string SettingsFavoriteMoveDown => Get();
+    public static string SettingsFavoriteRemove => Get();
     public static string SettingsVolumesHeader => Get();
     public static string SettingsVolumesHelp => Get();
     public static string SettingsVolumeRow(string name, int percent) => Format(nameof(SettingsVolumeRow), name, percent);

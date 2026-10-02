@@ -9,6 +9,8 @@ public sealed class AppConfig
 
     public VolumeOptions Volume { get; set; } = new();
 
+    public FavoritesOptions Favorites { get; set; } = new();
+
     /// <summary>"auto" | "en" | "fr".</summary>
     public string Language { get; set; } = "auto";
 }

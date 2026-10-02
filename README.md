@@ -45,11 +45,16 @@ Binaries are Authenticode-signed (Certum, timestamped).
 Tray menu, and the default-device picker - set your default output / microphone
 (and their communication variants) straight from the tray:
 
-![Tray menu](assets/tray-menu.png) &nbsp; ![Default-device picker](assets/devices-menu.png)
+![Tray menu and default-device picker](assets/devices-menu.en.png)
 
-Settings - the auto-switch grace window, the language, and per-device volume locks:
+Settings, one tab each - the auto-switch grace window and the language,
+favorite devices, and per-device volume locks:
 
-![Settings and volume locks](assets/settings.png)
+![Settings: general](assets/settings-general.en.png)
+
+![Settings: favorite devices](assets/settings-favorites.en.png)
+
+![Settings: volume locks](assets/settings-volumes.en.png)
 
 ## Use
 
@@ -60,12 +65,29 @@ AudioWinFix has no window - it lives in the tray. Right-click the tray icon:
 - **Default devices** - set the default / default-communication device for
   output and microphone straight from the tray, without digging through the
   Windows menus. Your choice is adopted as the new pin.
-- **Settings…** - the **grace window** (ms), the **language** (Auto / English /
-  Français), and **volume locks** (see below).
+- **Settings…** (or double-click the icon) - the **grace window** (ms), the
+  **language** (Auto / English / Français), **favorite devices** and **volume
+  locks** (see below).
 - **Start with Windows** - per-user auto-start (no admin).
 - **Check for updates**, **Open log folder**, **Quit**.
 
 The tooltip lists the currently pinned devices.
+
+### Favorite devices
+
+When the pinned device itself is unplugged there is nothing to revert to, and
+Windows picks whatever it likes. In **Settings → Favorite devices**, list the
+outputs and microphones an automatic switch is allowed to land on, highest
+priority first. There is one list per tray group (output and microphone, each
+default and communication), so the communication devices get their own. When
+the pinned device disappears:
+
+- if Windows picked a favorite, it is kept;
+- otherwise the default goes to the first favorite that is plugged in;
+- with no favorite plugged in (or none set), Windows' choice is kept.
+
+The pin is left as it was, and switches you make yourself are never blocked.
+Favorites that are unplugged stay in the list, marked as disconnected.
 
 ### Volume locks
 

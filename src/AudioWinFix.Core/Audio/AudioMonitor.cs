@@ -13,6 +13,7 @@ public sealed class AudioMonitor : IAudioMonitor
     private readonly MMDeviceEnumerator enumerator = new();
     private readonly PinStore store;
     private readonly IOptionsMonitor<AudioMonitorOptions> options;
+    private readonly IOptionsMonitor<FavoritesOptions> favorites;
     private readonly ILogger<AudioMonitor> logger;
     private readonly Lock gate = new();
 
@@ -23,10 +24,15 @@ public sealed class AudioMonitor : IAudioMonitor
     // the audio worker thread (see OnDefaultDeviceChanged).
     private Task pending = Task.CompletedTask;
 
-    public AudioMonitor(PinStore store, IOptionsMonitor<AudioMonitorOptions> options, ILogger<AudioMonitor> logger)
+    public AudioMonitor(
+        PinStore store,
+        IOptionsMonitor<AudioMonitorOptions> options,
+        IOptionsMonitor<FavoritesOptions> favorites,
+        ILogger<AudioMonitor> logger)
     {
         this.store = store;
         this.options = options;
+        this.favorites = favorites;
         this.logger = logger;
     }
 
@@ -111,8 +117,17 @@ public sealed class AudioMonitor : IAudioMonitor
             case SwitchAction.Ignore:
                 return;
             case SwitchAction.Revert when !Paused:
-                logger.LogInformation("Reverting {Flow}/{Role} → pinned {Pin}", flow, role, pinned);
-                var hr = PolicyConfig.SetDefault(pinned!, role);
+                var favoriteIds = favorites.CurrentValue.For(flow, role).Select(f => f.DeviceId).ToList();
+                var target = SwitchDecision.RevertTarget(newDefaultId, pinned!, favoriteIds, IsActive);
+                if (target is null)
+                {
+                    // Keep the pin rather than adopting: this was not the user's choice.
+                    logger.LogInformation("Pinned {Flow}/{Role} {Pin} is gone; keeping {Id}", flow, role, pinned, newDefaultId);
+                    return;
+                }
+                logger.LogInformation("Reverting {Flow}/{Role} → {Kind} {Target}",
+                    flow, role, target == pinned ? "pinned" : "favorite", target);
+                var hr = PolicyConfig.SetDefault(target, role);
                 if (hr != 0) logger.LogWarning("SetDefault failed (hr=0x{Hr:X})", hr);
                 return;
             case SwitchAction.Revert: // Paused → fall through and adopt so pins track reality
@@ -121,6 +136,19 @@ public sealed class AudioMonitor : IAudioMonitor
                 store.Save();
                 logger.LogInformation("Adopted {Flow}/{Role} → {Id}", flow, role, newDefaultId);
                 return;
+        }
+    }
+
+    private bool IsActive(string id)
+    {
+        try
+        {
+            using var device = enumerator.GetDevice(id);
+            return device.State == DeviceState.Active;
+        }
+        catch
+        {
+            return false; // unknown or removed endpoint
         }
     }
 

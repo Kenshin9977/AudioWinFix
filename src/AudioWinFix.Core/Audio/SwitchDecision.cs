@@ -29,4 +29,26 @@ public static class SwitchDecision
             ? SwitchAction.Revert
             : SwitchAction.Adopt;
     }
+
+    /// <summary>
+    /// Where a <see cref="SwitchAction.Revert"/> should go, or null to leave
+    /// Windows' choice in place. The pin wins while it is plugged in. Once it is
+    /// gone the favorites act as a whitelist: a favorite Windows picked is kept,
+    /// anything else is replaced by the first favorite that is plugged in.
+    /// Without favorites, or with none plugged in, there is nothing better to
+    /// offer than what Windows chose.
+    /// </summary>
+    public static string? RevertTarget(
+        string newId,
+        string pinnedId,
+        IReadOnlyList<string> favorites,
+        Func<string, bool> isActive)
+    {
+        ArgumentNullException.ThrowIfNull(favorites);
+        ArgumentNullException.ThrowIfNull(isActive);
+
+        if (isActive(pinnedId)) return pinnedId;
+        if (favorites.Contains(newId, StringComparer.OrdinalIgnoreCase)) return null;
+        return favorites.FirstOrDefault(isActive);
+    }
 }
