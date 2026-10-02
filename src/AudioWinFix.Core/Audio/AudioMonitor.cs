@@ -1,11 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NAudio.CoreAudioApi;
-using NAudio.CoreAudioApi.Interfaces;
 
 namespace AudioWinFix.Core.Audio;
 
-public sealed class AudioMonitor : IAudioMonitor, IMMNotificationClient
+public sealed class AudioMonitor : IAudioMonitor
 {
     // The roles that map to Windows' two user-facing defaults, for both flows.
     private static readonly Role[] Roles = [Role.Console, Role.Multimedia, Role.Communications];
@@ -18,7 +17,11 @@ public sealed class AudioMonitor : IAudioMonitor, IMMNotificationClient
     private readonly Lock gate = new();
 
     private long lastDeviceEventTick;
-    private bool registered;
+    private MMDeviceNotificationClient? notifications;
+
+    // Default-device changes are handled one at a time, in arrival order, off
+    // the audio worker thread (see OnDefaultDeviceChanged).
+    private Task pending = Task.CompletedTask;
 
     public AudioMonitor(PinStore store, IOptionsMonitor<AudioMonitorOptions> options, ILogger<AudioMonitor> logger)
     {
@@ -34,8 +37,16 @@ public sealed class AudioMonitor : IAudioMonitor, IMMNotificationClient
         store.Load();
         SeedMissingPinsFromCurrentDefaults();
         store.Save();
-        enumerator.RegisterEndpointNotificationCallback(this);
-        registered = true;
+
+        // Raised synchronously on the Windows audio worker thread (false), not
+        // marshalled to whatever SynchronizationContext Start happens to run
+        // on: the plug timestamp has to be taken when the event happens, not
+        // when a busy UI thread gets round to it.
+        notifications = enumerator.CreateNotificationClient(useSynchronizationContext: false);
+        notifications.DeviceAdded += (_, _) => MarkDeviceEvent();
+        notifications.DeviceRemoved += (_, _) => MarkDeviceEvent();
+        notifications.DeviceStateChanged += (_, _) => MarkDeviceEvent();
+        notifications.DefaultDeviceChanged += (_, e) => OnDefaultDeviceChanged(e.Flow, e.Role, e.DeviceId);
         logger.LogInformation("AudioMonitor started. Pins:\n{Pins}", DescribePins());
     }
 
@@ -51,33 +62,48 @@ public sealed class AudioMonitor : IAudioMonitor, IMMNotificationClient
         }
     }
 
-    // --- IMMNotificationClient (fires on a COM thread) ---
-
-    public void OnDeviceAdded(string id) => MarkDeviceEvent();
-
-    public void OnDeviceRemoved(string id) => MarkDeviceEvent();
-
-    public void OnDeviceStateChanged(string id, DeviceState newState) => MarkDeviceEvent();
-
-    public void OnPropertyValueChanged(string id, PropertyKey key) { }
+    // --- Notification handlers (audio worker thread: must not block) ---
 
     private void MarkDeviceEvent()
     {
         lock (gate) { lastDeviceEventTick = Environment.TickCount64; }
     }
 
-    public void OnDefaultDeviceChanged(DataFlow flow, Role role, string newDefaultId)
+    private void OnDefaultDeviceChanged(DataFlow flow, Role role, string? newDefaultId)
     {
         if (string.IsNullOrEmpty(newDefaultId)) return; // no default (everything unplugged)
-        var key = new EndpointKey(flow, role);
 
+        // Measured now, on the notifying thread; everything else waits for the
+        // queue. The worker thread holds an audio-stack lock while it notifies,
+        // so setting the default from here is exactly the call-back it forbids.
         double sinceEvent;
-        string? pinned;
         lock (gate)
         {
             sinceEvent = Environment.TickCount64 - lastDeviceEventTick;
-            pinned = store.Get(key);
+            pending = pending.ContinueWith(
+                _ => HandleDefaultChange(flow, role, newDefaultId, sinceEvent),
+                CancellationToken.None,
+                TaskContinuationOptions.None,
+                TaskScheduler.Default);
         }
+    }
+
+    private void HandleDefaultChange(DataFlow flow, Role role, string newDefaultId, double sinceEvent)
+    {
+        try
+        {
+            ApplyDecision(flow, role, newDefaultId, sinceEvent);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Handling default change {Flow}/{Role} -> {Id} failed", flow, role, newDefaultId);
+        }
+    }
+
+    private void ApplyDecision(DataFlow flow, Role role, string newDefaultId, double sinceEvent)
+    {
+        var key = new EndpointKey(flow, role);
+        var pinned = store.Get(key);
 
         var action = SwitchDecision.Decide(newDefaultId, pinned, sinceEvent, options.CurrentValue.ThresholdMs);
         switch (action)
@@ -119,7 +145,7 @@ public sealed class AudioMonitor : IAudioMonitor, IMMNotificationClient
 
     public void Dispose()
     {
-        if (registered) enumerator.UnregisterEndpointNotificationCallback(this);
+        notifications?.Dispose();
         enumerator.Dispose();
     }
 }
