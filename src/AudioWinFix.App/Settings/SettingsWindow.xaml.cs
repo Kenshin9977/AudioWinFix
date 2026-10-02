@@ -24,7 +24,9 @@ public partial class SettingsWindow : FluentWindow
     private readonly AppConfig loaded;
     private readonly List<(System.Windows.Controls.CheckBox Box, AudioDeviceInfo Device)> volumeRows = [];
     private readonly FavoritesEditor renderFavorites;
+    private readonly FavoritesEditor renderCommFavorites;
     private readonly FavoritesEditor captureFavorites;
+    private readonly FavoritesEditor captureCommFavorites;
 
     public SettingsWindow(AudioController controller, ILogger logger)
     {
@@ -43,10 +45,6 @@ public partial class SettingsWindow : FluentWindow
         LanguageLabel.Text = Strings.SettingsLanguageLabel;
         FavoritesHeader.Text = Strings.SettingsFavoritesHeader;
         FavoritesHelp.Text = Strings.SettingsFavoritesHelp;
-        RenderFavoritesLabel.Text = Strings.SettingsFavoritesOutput;
-        CaptureFavoritesLabel.Text = Strings.SettingsFavoritesInput;
-        RenderFavoriteAdd.Content = Strings.SettingsFavoritesAdd;
-        CaptureFavoriteAdd.Content = Strings.SettingsFavoritesAdd;
         VolumesHeader.Text = Strings.SettingsVolumesHeader;
         VolumesHelp.Text = Strings.SettingsVolumesHelp;
         NoDevicesText.Text = Strings.MenuNoDevices;
@@ -67,10 +65,12 @@ public partial class SettingsWindow : FluentWindow
 
         var render = SafeList(DataFlow.Render);
         var capture = SafeList(DataFlow.Capture);
-        renderFavorites = new FavoritesEditor(
-            loaded.Favorites.Render, render, RenderFavorites, RenderFavoriteCandidates, RenderFavoriteAdd);
-        captureFavorites = new FavoritesEditor(
-            loaded.Favorites.Capture, capture, CaptureFavorites, CaptureFavoriteCandidates, CaptureFavoriteAdd);
+        // Same four groups, same labels and order as the tray's device menu.
+        var favorites = loaded.Favorites;
+        renderFavorites = new FavoritesEditor(Strings.MenuOutputDefault, favorites.Render, render, FavoriteSections);
+        renderCommFavorites = new FavoritesEditor(Strings.MenuOutputComm, favorites.RenderCommunications, render, FavoriteSections);
+        captureFavorites = new FavoritesEditor(Strings.MenuInputDefault, favorites.Capture, capture, FavoriteSections);
+        captureCommFavorites = new FavoritesEditor(Strings.MenuInputComm, favorites.CaptureCommunications, capture, FavoriteSections);
         PopulateVolumeRows(loaded.Volume, render.Concat(capture));
     }
 
@@ -158,7 +158,9 @@ public partial class SettingsWindow : FluentWindow
             config.Language = ((LanguageItem)LanguageCombo.SelectedItem).Code;
             config.Volume.Locks = CollectLocks();
             config.Favorites.Render = renderFavorites.Result;
+            config.Favorites.RenderCommunications = renderCommFavorites.Result;
             config.Favorites.Capture = captureFavorites.Result;
+            config.Favorites.CaptureCommunications = captureCommFavorites.Result;
 
             await AppConfigStore.SaveAsync(config).ConfigureAwait(true);
             logger.LogInformation("Settings saved (thresholdMs={Threshold}, language={Lang}, locks={Locks})",
@@ -189,29 +191,44 @@ public partial class SettingsWindow : FluentWindow
     private sealed record LanguageItem(string Code, string Display);
 
     /// <summary>
-    /// One flow's favorites: an ordered list (first = highest priority) with
-    /// move/remove buttons per row, and a picker of plugged-in devices to add.
-    /// Unplugged favorites stay listed, under their stored name.
+    /// One device group's favorites, as its own section appended to a panel: an
+    /// ordered list (first = highest priority) with move/remove buttons per row,
+    /// and a picker of plugged-in devices to add. Unplugged favorites stay
+    /// listed, under their stored name.
     /// </summary>
     private sealed class FavoritesEditor
     {
         private readonly List<FavoriteDevice> items;
         private readonly IReadOnlyList<AudioDeviceInfo> active;
-        private readonly StackPanel rows;
-        private readonly ComboBox candidates;
-        private readonly Wpf.Ui.Controls.Button add;
+        private readonly StackPanel rows = new();
+        private readonly ComboBox candidates = new() { DisplayMemberPath = nameof(AudioDeviceInfo.Name) };
+        private readonly Wpf.Ui.Controls.Button add = new()
+        {
+            Content = Strings.SettingsFavoritesAdd,
+            Icon = new SymbolIcon(SymbolRegular.Add24),
+            Margin = new Thickness(8, 0, 0, 0),
+        };
 
         public FavoritesEditor(
+            string label,
             IEnumerable<FavoriteDevice> current,
             IReadOnlyList<AudioDeviceInfo> active,
-            StackPanel rows,
-            ComboBox candidates,
-            Wpf.Ui.Controls.Button add)
+            Panel parent)
         {
             this.active = active;
-            this.rows = rows;
-            this.candidates = candidates;
-            this.add = add;
+
+            var picker = new Grid { Margin = new Thickness(0, 4, 0, 0) };
+            picker.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            picker.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            Grid.SetColumn(add, 1);
+            picker.Children.Add(candidates);
+            picker.Children.Add(add);
+
+            var section = new StackPanel { Margin = new Thickness(0, parent.Children.Count == 0 ? 0 : 16, 0, 0) };
+            section.Children.Add(new TextBlock { Text = label, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 4) });
+            section.Children.Add(rows);
+            section.Children.Add(picker);
+            parent.Children.Add(section);
 
             // Copies, with names refreshed from the live device where there is one.
             items = current

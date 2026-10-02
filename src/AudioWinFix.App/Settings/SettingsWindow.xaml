@@ -2,7 +2,7 @@
                  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-                 Width="560" Height="760"
+                 Width="560" Height="820"
                  MinWidth="480" MinHeight="460"
                  WindowStartupLocation="CenterScreen"
                  ExtendsContentIntoTitleBar="True"
@@ -57,29 +57,9 @@
                         <TextBlock x:Name="FavoritesHeader" Style="{StaticResource SectionHeader}" />
                         <TextBlock x:Name="FavoritesHelp" Style="{StaticResource Hint}" />
 
-                        <TextBlock x:Name="RenderFavoritesLabel" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <StackPanel x:Name="RenderFavorites" />
-                        <Grid Margin="0,4,0,16">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="RenderFavoriteCandidates" DisplayMemberPath="Name" />
-                            <ui:Button x:Name="RenderFavoriteAdd" Grid.Column="1" Margin="8,0,0,0"
-                                       Icon="{ui:SymbolIcon Add24}" />
-                        </Grid>
-
-                        <TextBlock x:Name="CaptureFavoritesLabel" FontWeight="SemiBold" Margin="0,0,0,4" />
-                        <StackPanel x:Name="CaptureFavorites" />
-                        <Grid Margin="0,4,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ComboBox x:Name="CaptureFavoriteCandidates" DisplayMemberPath="Name" />
-                            <ui:Button x:Name="CaptureFavoriteAdd" Grid.Column="1" Margin="8,0,0,0"
-                                       Icon="{ui:SymbolIcon Add24}" />
-                        </Grid>
+                        <!-- One section per tray device group (output/microphone x
+                             default/communication), built in code. -->
+                        <StackPanel x:Name="FavoriteSections" />
                     </StackPanel>
                 </ui:Card>
 

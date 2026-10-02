@@ -73,7 +73,9 @@ The tooltip lists the currently pinned devices.
 When the pinned device itself is unplugged there is nothing to revert to, and
 Windows picks whatever it likes. In **Settings → Favorite devices**, list the
 outputs and microphones an automatic switch is allowed to land on, highest
-priority first. When the pinned device disappears:
+priority first. There is one list per tray group (output and microphone, each
+default and communication), so the communication devices get their own. When
+the pinned device disappears:
 
 - if Windows picked a favorite, it is kept;
 - otherwise the default goes to the first favorite that is plugged in;

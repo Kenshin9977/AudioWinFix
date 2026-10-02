@@ -117,7 +117,7 @@ public sealed class AudioMonitor : IAudioMonitor
             case SwitchAction.Ignore:
                 return;
             case SwitchAction.Revert when !Paused:
-                var favoriteIds = favorites.CurrentValue.For(flow).Select(f => f.DeviceId).ToList();
+                var favoriteIds = favorites.CurrentValue.For(flow, role).Select(f => f.DeviceId).ToList();
                 var target = SwitchDecision.RevertTarget(newDefaultId, pinned!, favoriteIds, IsActive);
                 if (target is null)
                 {

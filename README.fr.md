@@ -79,8 +79,9 @@ L'info-bulle liste les appareils actuellement épinglés.
 Quand c'est l'appareil épinglé lui-même qui est débranché, il n'y a rien vers
 quoi revenir, et Windows choisit ce qu'il veut. Dans **Paramètres → Appareils
 favoris**, liste les sorties et micros vers lesquels une bascule automatique a le
-droit d'aller, du plus prioritaire au moins prioritaire. Quand l'appareil épinglé
-disparaît :
+droit d'aller, du plus prioritaire au moins prioritaire. Il y a une liste par
+groupe du menu (sortie et micro, chacun en défaut et en communication), donc les
+appareils de communication ont la leur. Quand l'appareil épinglé disparaît :
 
 - si Windows a choisi un favori, il est conservé ;
 - sinon le défaut passe au premier favori branché ;
