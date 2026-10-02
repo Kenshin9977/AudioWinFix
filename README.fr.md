@@ -118,7 +118,7 @@ que sous Windows.
 
 ```
 src/
-  AudioWinFix.App/    App WinForms en barre d'état (entrée, UI, paramètres, hosting)
+  AudioWinFix.App/    App WPF + WPF-UI (Fluent) en barre d'état (entrée, UI, paramètres, hosting)
   AudioWinFix.Core/   Bibliothèque sans UI
     Audio/            AudioMonitor, l'heuristique de switch, interop IPolicyConfig,
                       stockage des épinglages
