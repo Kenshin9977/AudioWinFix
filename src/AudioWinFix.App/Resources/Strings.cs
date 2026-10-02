@@ -16,8 +16,8 @@ internal static class Strings
         ["AppLanguageRestartMessage"] = "Language changed. AudioWinFix will restart to apply it.",
 
         // Tray
-        ["TrayTooltipHeader"] = "AudioWinFix — pinned devices:",
-        ["TrayPaused"] = "AudioWinFix — paused",
+        ["TrayTooltipHeader"] = "AudioWinFix - pinned devices:",
+        ["TrayPaused"] = "AudioWinFix - paused",
         ["MenuPause"] = "Pause",
         ["MenuResume"] = "Resume",
         ["MenuDefaultDevices"] = "Default devices",
@@ -34,7 +34,8 @@ internal static class Strings
         ["MenuQuit"] = "Quit",
 
         // Settings
-        ["SettingsTitle"] = "AudioWinFix — Settings",
+        ["SettingsTitle"] = "AudioWinFix - Settings",
+        ["SettingsGeneralHeader"] = "General",
         ["SettingsThresholdLabel"] = "Auto-switch grace window (ms):",
         ["SettingsThresholdHelp"] =
             "A default-device change within this delay of plugging a device is treated as " +
@@ -46,9 +47,15 @@ internal static class Strings
             "Tick a device to lock its current volume and mute. Anything that changes it " +
             "(a game, an app) is reverted. To change a locked level, untick it, adjust in " +
             "Windows, then tick it again and save.",
-        ["SettingsVolumeRow"] = "{0} — {1}%",
+        ["SettingsVolumeRow"] = "{0} - {1}%",
         ["SettingsSave"] = "Save",
         ["SettingsCancel"] = "Cancel",
+        ["SettingsSaveFailed"] = "Could not save settings: {0}",
+
+        // Dialogs
+        ["DialogClose"] = "Close",
+        ["DialogYes"] = "Yes",
+        ["DialogNo"] = "No",
 
         // Updates
         ["UpdatesNotInstalledMessage"] =
@@ -67,8 +74,8 @@ internal static class Strings
         ["AppLanguageRestartMessage"] = "Langue modifiée. AudioWinFix va redémarrer pour l'appliquer.",
 
         // Barre d'état
-        ["TrayTooltipHeader"] = "AudioWinFix — appareils épinglés :",
-        ["TrayPaused"] = "AudioWinFix — en pause",
+        ["TrayTooltipHeader"] = "AudioWinFix - appareils épinglés :",
+        ["TrayPaused"] = "AudioWinFix - en pause",
         ["MenuPause"] = "Pause",
         ["MenuResume"] = "Reprendre",
         ["MenuDefaultDevices"] = "Appareils par défaut",
@@ -85,7 +92,8 @@ internal static class Strings
         ["MenuQuit"] = "Quitter",
 
         // Paramètres
-        ["SettingsTitle"] = "AudioWinFix — Paramètres",
+        ["SettingsTitle"] = "AudioWinFix - Paramètres",
+        ["SettingsGeneralHeader"] = "Général",
         ["SettingsThresholdLabel"] = "Fenêtre anti-bascule auto (ms) :",
         ["SettingsThresholdHelp"] =
             "Un changement d'appareil par défaut survenant dans ce délai après un branchement " +
@@ -97,9 +105,15 @@ internal static class Strings
             "Coche un appareil pour verrouiller son volume et son état muet actuels. Tout ce " +
             "qui les modifie (un jeu, une app) est annulé. Pour changer un niveau verrouillé : " +
             "décoche, ajuste dans Windows, puis recoche et enregistre.",
-        ["SettingsVolumeRow"] = "{0} — {1} %",
+        ["SettingsVolumeRow"] = "{0} - {1} %",
         ["SettingsSave"] = "Enregistrer",
         ["SettingsCancel"] = "Annuler",
+        ["SettingsSaveFailed"] = "Impossible d'enregistrer les paramètres : {0}",
+
+        // Dialogues
+        ["DialogClose"] = "Fermer",
+        ["DialogYes"] = "Oui",
+        ["DialogNo"] = "Non",
 
         // Mises à jour
         ["UpdatesNotInstalledMessage"] =
@@ -147,6 +161,7 @@ internal static class Strings
     public static string MenuQuit => Get();
 
     public static string SettingsTitle => Get();
+    public static string SettingsGeneralHeader => Get();
     public static string SettingsThresholdLabel => Get();
     public static string SettingsThresholdHelp => Get();
     public static string SettingsLanguageLabel => Get();
@@ -156,6 +171,11 @@ internal static class Strings
     public static string SettingsVolumeRow(string name, int percent) => Format(nameof(SettingsVolumeRow), name, percent);
     public static string SettingsSave => Get();
     public static string SettingsCancel => Get();
+    public static string SettingsSaveFailed(string message) => Format(nameof(SettingsSaveFailed), message);
+
+    public static string DialogClose => Get();
+    public static string DialogYes => Get();
+    public static string DialogNo => Get();
 
     public static string UpdatesNotInstalledMessage => Get();
     public static string UpdatesCheckingBalloon => Get();

@@ -111,7 +111,7 @@ tests on Windows only.
 
 ```
 src/
-  AudioWinFix.App/    WinForms tray app (entry, tray UI, settings, hosting)
+  AudioWinFix.App/    WPF + WPF-UI (Fluent) tray app (entry, tray UI, settings, hosting)
   AudioWinFix.Core/   UI-free library
     Audio/            AudioMonitor, the switch heuristic, IPolicyConfig interop,
                       pin store
