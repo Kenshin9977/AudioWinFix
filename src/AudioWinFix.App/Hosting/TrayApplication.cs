@@ -12,6 +12,7 @@ using H.NotifyIcon.Core;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NAudio.CoreAudioApi;
+using Wpf.Ui.Controls;
 // Wpf.Ui.Controls redefines both of these. The menu wants the plain WPF
 // MenuItem — the Fluent one is for NavigationView — and the message box wants
 // the Fluent one.
@@ -174,10 +175,14 @@ public sealed class TrayApplication : IDisposable
         foreach (var d in devices)
         {
             var id = d.Id;
+            var isCurrent = communications ? d.IsDefaultComm : d.IsDefault;
             var item = new MenuItem
             {
                 Header = d.Name,
-                IsChecked = communications ? d.IsDefaultComm : d.IsDefault,
+                // WPF-UI only draws IsChecked on checkable items, and a checkbox
+                // reads as a toggle; a checkmark icon marks the current device.
+                Icon = isCurrent ? new SymbolIcon(SymbolRegular.Checkmark24) : null,
+                FontWeight = isCurrent ? FontWeights.SemiBold : FontWeights.Normal,
             };
             item.Click += async (_, _) => await OnPickDeviceAsync(id, flow, communications).ConfigureAwait(true);
             group.Items.Add(item);
