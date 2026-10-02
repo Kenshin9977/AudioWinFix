@@ -60,12 +60,27 @@ AudioWinFix has no window - it lives in the tray. Right-click the tray icon:
 - **Default devices** - set the default / default-communication device for
   output and microphone straight from the tray, without digging through the
   Windows menus. Your choice is adopted as the new pin.
-- **Settings…** - the **grace window** (ms), the **language** (Auto / English /
-  Français), and **volume locks** (see below).
+- **Settings…** (or double-click the icon) - the **grace window** (ms), the
+  **language** (Auto / English / Français), **favorite devices** and **volume
+  locks** (see below).
 - **Start with Windows** - per-user auto-start (no admin).
 - **Check for updates**, **Open log folder**, **Quit**.
 
 The tooltip lists the currently pinned devices.
+
+### Favorite devices
+
+When the pinned device itself is unplugged there is nothing to revert to, and
+Windows picks whatever it likes. In **Settings → Favorite devices**, list the
+outputs and microphones an automatic switch is allowed to land on, highest
+priority first. When the pinned device disappears:
+
+- if Windows picked a favorite, it is kept;
+- otherwise the default goes to the first favorite that is plugged in;
+- with no favorite plugged in (or none set), Windows' choice is kept.
+
+The pin is left as it was, and switches you make yourself are never blocked.
+Favorites that are unplugged stay in the list, marked as disconnected.
 
 ### Volume locks
 

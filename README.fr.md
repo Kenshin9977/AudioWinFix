@@ -66,12 +66,28 @@ l'icône :
 - **Appareils par défaut** - définir l'appareil par défaut / de communication par
   défaut pour la sortie et le micro directement depuis le tray, sans fouiller les
   menus Windows. Votre choix devient le nouvel épinglage.
-- **Paramètres…** - la **fenêtre de grâce** (ms), la **langue** (Auto / English /
-  Français) et les **verrous de volume** (voir ci-dessous).
+- **Paramètres…** (ou double-clic sur l'icône) - la **fenêtre de grâce** (ms), la
+  **langue** (Auto / English / Français), les **appareils favoris** et les
+  **verrous de volume** (voir ci-dessous).
 - **Démarrer avec Windows** - démarrage automatique par utilisateur (sans admin).
 - **Rechercher des mises à jour**, **Ouvrir le dossier des journaux**, **Quitter**.
 
 L'info-bulle liste les appareils actuellement épinglés.
+
+### Appareils favoris
+
+Quand c'est l'appareil épinglé lui-même qui est débranché, il n'y a rien vers
+quoi revenir, et Windows choisit ce qu'il veut. Dans **Paramètres → Appareils
+favoris**, liste les sorties et micros vers lesquels une bascule automatique a le
+droit d'aller, du plus prioritaire au moins prioritaire. Quand l'appareil épinglé
+disparaît :
+
+- si Windows a choisi un favori, il est conservé ;
+- sinon le défaut passe au premier favori branché ;
+- sans favori branché (ou sans favori du tout), le choix de Windows est conservé.
+
+L'épinglage n'est pas modifié, et tes propres changements ne sont jamais
+bloqués. Les favoris débranchés restent dans la liste, marqués comme déconnectés.
 
 ### Verrous de volume
 
