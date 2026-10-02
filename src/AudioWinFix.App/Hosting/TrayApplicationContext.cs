@@ -55,7 +55,14 @@ public sealed class TrayApplicationContext : ApplicationContext
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(Strings.MenuSettings, null, OnSettingsClicked);
         menu.Items.Add(autoStartItem);
-        menu.Items.Add(Strings.MenuCheckUpdates, null, OnCheckForUpdatesClicked);
+
+        // Hidden rather than disabled in the Store edition. A greyed-out
+        // "Check for updates" invites the user to wonder what is broken; its
+        // absence reads as "something else handles this", which is true.
+        if (AppUpdater.SelfUpdatesAllowed)
+        {
+            menu.Items.Add(Strings.MenuCheckUpdates, null, OnCheckForUpdatesClicked);
+        }
         menu.Items.Add(Strings.MenuOpenLogFolder, null, OnOpenLogFolderClicked);
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add(Strings.MenuQuit, null, OnQuitClicked);

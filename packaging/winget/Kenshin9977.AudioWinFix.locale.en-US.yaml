@@ -1,0 +1,45 @@
+PackageIdentifier: Kenshin9977.AudioWinFix
+PackageVersion: <FILL:VERSION>
+PackageLocale: en-US
+
+Publisher: Kenshin9977
+PublisherUrl: https://github.com/Kenshin9977
+PublisherSupportUrl: https://github.com/Kenshin9977/AudioWinFix/issues
+
+PackageName: AudioWinFix
+PackageUrl: https://github.com/Kenshin9977/AudioWinFix
+
+License: MIT
+LicenseUrl: https://github.com/Kenshin9977/AudioWinFix/blob/main/LICENSE
+Copyright: Copyright (c) Kenshin9977
+
+ShortDescription: Stops Windows from switching your audio device every time you plug something in.
+
+Description: |-
+  Windows changes your default playback, recording and communications devices on
+  its own, whenever a headset, a monitor or a dock appears or disappears. If you
+  have ever finished a call and found your game audio coming out of the monitor
+  speakers, that is this.
+
+  AudioWinFix pins the devices you chose. Plug and unplug all you like: what you
+  picked stays picked. Switching by hand still works and is taken as the new
+  intent, so it stays out of the way rather than fighting you.
+
+  It sits in the tray, uses no perceptible resources, and needs no configuration
+  beyond telling it once what you want.
+
+Moniker: audiowinfix
+Tags:
+  - audio
+  - sound
+  - default-device
+  - playback
+  - recording
+  - headset
+  - tray
+  - utility
+
+ReleaseNotesUrl: https://github.com/Kenshin9977/AudioWinFix/releases
+
+ManifestType: defaultLocale
+ManifestVersion: 1.6.0
