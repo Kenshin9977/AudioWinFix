@@ -49,12 +49,16 @@ Le menu du tray et le sélecteur d'appareil par défaut - définis ta sortie /
 ton micro par défaut (et leurs variantes communication) directement depuis le
 tray :
 
-![Menu du tray](assets/tray-menu.png) &nbsp; ![Sélecteur d'appareil](assets/devices-menu.png)
+![Menu du tray et sélecteur d'appareil](assets/devices-menu.fr.png)
 
-Paramètres - la fenêtre anti-bascule, la langue, et les verrous de volume par
-appareil :
+Paramètres, un onglet chacun - la fenêtre anti-bascule et la langue, les
+appareils favoris, et les verrous de volume par appareil :
 
-![Paramètres et verrous de volume](assets/settings.png)
+![Paramètres : général](assets/settings-general.fr.png)
+
+![Paramètres : appareils favoris](assets/settings-favorites.fr.png)
+
+![Paramètres : verrous de volume](assets/settings-volumes.fr.png)
 
 ## Utilisation
 

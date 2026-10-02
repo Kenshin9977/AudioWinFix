@@ -45,11 +45,16 @@ Binaries are Authenticode-signed (Certum, timestamped).
 Tray menu, and the default-device picker - set your default output / microphone
 (and their communication variants) straight from the tray:
 
-![Tray menu](assets/tray-menu.png) &nbsp; ![Default-device picker](assets/devices-menu.png)
+![Tray menu and default-device picker](assets/devices-menu.en.png)
 
-Settings - the auto-switch grace window, the language, and per-device volume locks:
+Settings, one tab each - the auto-switch grace window and the language,
+favorite devices, and per-device volume locks:
 
-![Settings and volume locks](assets/settings.png)
+![Settings: general](assets/settings-general.en.png)
+
+![Settings: favorite devices](assets/settings-favorites.en.png)
+
+![Settings: volume locks](assets/settings-volumes.en.png)
 
 ## Use
 
