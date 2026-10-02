@@ -1,0 +1,84 @@
+<ui:FluentWindow x:Class="AudioWinFix.App.Settings.SettingsWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 Width="560" Height="640"
+                 MinWidth="480" MinHeight="460"
+                 WindowStartupLocation="CenterScreen"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 WindowCornerPreference="Round">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" x:Name="Titlebar" ShowMaximize="False">
+            <ui:TitleBar.Icon>
+                <ui:ImageIcon Source="pack://application:,,,/AudioWinFix;component/AudioWinFix.ico" />
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="16,4,16,0">
+            <StackPanel>
+
+                <ui:Card Margin="{StaticResource SectionMargin}">
+                    <StackPanel>
+                        <TextBlock x:Name="GeneralHeader" Style="{StaticResource SectionHeader}" />
+
+                        <Grid Margin="{StaticResource FieldMargin}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="ThresholdLabel" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+                            <ui:NumberBox x:Name="ThresholdBox" Grid.Column="1" Width="150"
+                                          Minimum="250" Maximum="15000" SmallChange="250" LargeChange="1000"
+                                          ClearButtonEnabled="False" />
+                        </Grid>
+                        <TextBlock x:Name="ThresholdHelp" Style="{StaticResource Hint}" />
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="LanguageLabel" Style="{StaticResource FieldLabel}" />
+                            <ComboBox x:Name="LanguageCombo" Grid.Column="1" Width="150" DisplayMemberPath="Display" />
+                        </Grid>
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card Margin="0,0,0,4">
+                    <StackPanel>
+                        <TextBlock x:Name="VolumesHeader" Style="{StaticResource SectionHeader}" />
+                        <TextBlock x:Name="VolumesHelp" Style="{StaticResource Hint}" />
+                        <StackPanel x:Name="VolumeRows" />
+                        <TextBlock x:Name="NoDevicesText" Opacity="0.65" Visibility="Collapsed" />
+                    </StackPanel>
+                </ui:Card>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Padding="20,12,20,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="StatusText" Grid.Column="0"
+                           VerticalAlignment="Center" Margin="0,0,12,0"
+                           TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <ui:Button x:Name="SaveButton" Appearance="Primary" Click="OnSaveClick" MinWidth="96" IsDefault="True" />
+                    <ui:Button x:Name="CancelButton" Margin="8,0,0,0" Click="OnCancelClick" MinWidth="96" IsCancel="True" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

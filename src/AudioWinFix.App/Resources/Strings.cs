@@ -35,6 +35,7 @@ internal static class Strings
 
         // Settings
         ["SettingsTitle"] = "AudioWinFix — Settings",
+        ["SettingsGeneralHeader"] = "General",
         ["SettingsThresholdLabel"] = "Auto-switch grace window (ms):",
         ["SettingsThresholdHelp"] =
             "A default-device change within this delay of plugging a device is treated as " +
@@ -49,6 +50,12 @@ internal static class Strings
         ["SettingsVolumeRow"] = "{0} — {1}%",
         ["SettingsSave"] = "Save",
         ["SettingsCancel"] = "Cancel",
+        ["SettingsSaveFailed"] = "Could not save settings: {0}",
+
+        // Dialogs
+        ["DialogClose"] = "Close",
+        ["DialogYes"] = "Yes",
+        ["DialogNo"] = "No",
 
         // Updates
         ["UpdatesNotInstalledMessage"] =
@@ -86,6 +93,7 @@ internal static class Strings
 
         // Paramètres
         ["SettingsTitle"] = "AudioWinFix — Paramètres",
+        ["SettingsGeneralHeader"] = "Général",
         ["SettingsThresholdLabel"] = "Fenêtre anti-bascule auto (ms) :",
         ["SettingsThresholdHelp"] =
             "Un changement d'appareil par défaut survenant dans ce délai après un branchement " +
@@ -100,6 +108,12 @@ internal static class Strings
         ["SettingsVolumeRow"] = "{0} — {1} %",
         ["SettingsSave"] = "Enregistrer",
         ["SettingsCancel"] = "Annuler",
+        ["SettingsSaveFailed"] = "Impossible d'enregistrer les paramètres : {0}",
+
+        // Dialogues
+        ["DialogClose"] = "Fermer",
+        ["DialogYes"] = "Oui",
+        ["DialogNo"] = "Non",
 
         // Mises à jour
         ["UpdatesNotInstalledMessage"] =
@@ -147,6 +161,7 @@ internal static class Strings
     public static string MenuQuit => Get();
 
     public static string SettingsTitle => Get();
+    public static string SettingsGeneralHeader => Get();
     public static string SettingsThresholdLabel => Get();
     public static string SettingsThresholdHelp => Get();
     public static string SettingsLanguageLabel => Get();
@@ -156,6 +171,11 @@ internal static class Strings
     public static string SettingsVolumeRow(string name, int percent) => Format(nameof(SettingsVolumeRow), name, percent);
     public static string SettingsSave => Get();
     public static string SettingsCancel => Get();
+    public static string SettingsSaveFailed(string message) => Format(nameof(SettingsSaveFailed), message);
+
+    public static string DialogClose => Get();
+    public static string DialogYes => Get();
+    public static string DialogNo => Get();
 
     public static string UpdatesNotInstalledMessage => Get();
     public static string UpdatesCheckingBalloon => Get();

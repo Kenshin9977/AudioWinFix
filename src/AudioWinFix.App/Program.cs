@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.IO;
+using System.Windows.Threading;
 using AudioWinFix.App.Hosting;
 using AudioWinFix.Core;
 using AudioWinFix.Core.Audio;
@@ -9,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Velopack;
+using Wpf.Ui.Appearance;
 
 namespace AudioWinFix.App;
 
@@ -25,12 +28,13 @@ internal sealed class Program
 
         ApplyLanguageOverride();
 
-        ApplicationConfiguration.Initialize();
-
-        // Install the Windows Forms synchronization context on the main UI
-        // thread before the host builds any singletons, so IUiDispatcher can
-        // capture this context and let background services marshal to UI.
-        SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
+        // Install the WPF dispatcher's synchronization context on this thread
+        // before the host builds any singletons, so IUiDispatcher can capture it
+        // and let background services marshal to the UI. Touching
+        // CurrentDispatcher is what creates the dispatcher for this thread;
+        // Application.Run below then pumps it.
+        var dispatcher = Dispatcher.CurrentDispatcher;
+        SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext(dispatcher));
         var uiSyncContext = SynchronizationContext.Current!;
 
         var logsDirectory = Path.Combine(
@@ -42,7 +46,7 @@ internal sealed class Program
         var builder = Host.CreateApplicationBuilder(args);
 
         // Layer the user's settings.json on top of the bundled appsettings.json.
-        // This is the file the Settings form writes; reloadOnChange propagates
+        // This is the file the settings window writes; reloadOnChange propagates
         // edits to anything reading IOptionsMonitor<T>.CurrentValue (the threshold).
         builder.Configuration.AddJsonFile(
             AppConfigStore.DefaultFilePath,
@@ -72,18 +76,28 @@ internal sealed class Program
         builder.Services.AddSingleton<AutoStartManager>();
         builder.Services.AddSingleton<AppUpdater>();
         builder.Services.AddHostedService<AppHostedService>();
-        builder.Services.AddSingleton<TrayApplicationContext>();
+        builder.Services.AddSingleton<TrayApplication>();
 
         using var host = builder.Build();
         var logger = host.Services.GetRequiredService<ILogger<Program>>();
 
         try
         {
+            // The resource dictionaries in App.xaml have to be loaded before the
+            // tray icon builds its context menu, or the menu resolves none of
+            // the Fluent styles and renders as bare WPF.
+            var app = new App();
+            app.InitializeComponent();
+            ApplicationThemeManager.ApplySystemTheme();
+
             host.Start();
             logger.LogInformation("AudioWinFix started");
 
-            var context = host.Services.GetRequiredService<TrayApplicationContext>();
-            Application.Run(context);
+            // Resolved after the host starts and after the app exists: creating
+            // it puts the icon in the notification area.
+            using var tray = host.Services.GetRequiredService<TrayApplication>();
+
+            app.Run();
 
             logger.LogInformation("AudioWinFix shutting down");
             host.StopAsync(TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
