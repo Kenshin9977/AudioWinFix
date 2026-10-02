@@ -39,13 +39,13 @@ public partial class SettingsWindow : FluentWindow
         Title = Strings.SettingsTitle;
         Titlebar.Title = Strings.SettingsTitle;
 
-        GeneralHeader.Text = Strings.SettingsGeneralHeader;
+        GeneralTab.Header = Strings.SettingsGeneralHeader;
+        FavoritesTab.Header = Strings.SettingsFavoritesHeader;
+        VolumesTab.Header = Strings.SettingsVolumesHeader;
         ThresholdLabel.Text = Strings.SettingsThresholdLabel;
         ThresholdHelp.Text = Strings.SettingsThresholdHelp;
         LanguageLabel.Text = Strings.SettingsLanguageLabel;
-        FavoritesHeader.Text = Strings.SettingsFavoritesHeader;
         FavoritesHelp.Text = Strings.SettingsFavoritesHelp;
-        VolumesHeader.Text = Strings.SettingsVolumesHeader;
         VolumesHelp.Text = Strings.SettingsVolumesHelp;
         NoDevicesText.Text = Strings.MenuNoDevices;
         SaveButton.Content = Strings.SettingsSave;
@@ -67,10 +67,10 @@ public partial class SettingsWindow : FluentWindow
         var capture = SafeList(DataFlow.Capture);
         // Same four groups, same labels and order as the tray's device menu.
         var favorites = loaded.Favorites;
-        renderFavorites = new FavoritesEditor(Strings.MenuOutputDefault, favorites.Render, render, FavoriteSections);
-        renderCommFavorites = new FavoritesEditor(Strings.MenuOutputComm, favorites.RenderCommunications, render, FavoriteSections);
-        captureFavorites = new FavoritesEditor(Strings.MenuInputDefault, favorites.Capture, capture, FavoriteSections);
-        captureCommFavorites = new FavoritesEditor(Strings.MenuInputComm, favorites.CaptureCommunications, capture, FavoriteSections);
+        renderFavorites = new FavoritesEditor(Strings.MenuOutputDefault, favorites.Render, render, OutputFavorites);
+        renderCommFavorites = new FavoritesEditor(Strings.MenuOutputComm, favorites.RenderCommunications, render, OutputFavorites);
+        captureFavorites = new FavoritesEditor(Strings.MenuInputDefault, favorites.Capture, capture, InputFavorites);
+        captureCommFavorites = new FavoritesEditor(Strings.MenuInputComm, favorites.CaptureCommunications, capture, InputFavorites);
         PopulateVolumeRows(loaded.Volume, render.Concat(capture));
     }
 
